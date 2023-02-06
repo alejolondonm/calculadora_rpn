@@ -8,11 +8,12 @@ int main()
     int mi_opc;
     char opc2;
     float tmp;
-
-    imprimirpila();
+    int i = 0;
 
     while (mi_opc != 5)
     {
+        printf("\033[2J");
+        imprimirpila();
         mi_opc = menu();
         if (mi_opc == 1)
         {
@@ -23,88 +24,120 @@ int main()
         }
         else if (mi_opc == 2)
         {
-            // Operaciones
             printf("\033[2J");
             imprimirpila();
-            operaciones();
+            opc2 = operaciones();
+            printf("\n\n");
+            // Operaciones
             while (opc2 != '+' && opc2 != '-' && opc2 != '*' && opc2 != '/' && opc2 != 'r' && opc2 != 's' && opc2 != 'c' && opc2 != 't' && opc2 != 'p' && opc2 != 'x')
             {
-            }
-            scanf(" %c", &opc2);
-            switch (opc2)
-            {
-            case '+':
-                tmp = stack[7] + stack[6];
-                movestackdown();
-                stack[7] = tmp;
-                printf("\033[2J");
-                imprimirpila();
-                break;
-            case '-':
-                tmp = stack[7] - stack[6];
-                movestackdown();
-                stack[7] = tmp;
-                printf("\033[2J");
-                imprimirpila();
-                break;
-            case '*':
-                tmp = stack[7] * stack[6];
-                movestackdown();
-                stack[7] = tmp;
-                printf("\033[2J");
-                imprimirpila();
-                break;
-            case '/':
-                tmp = stack[7] / stack[6];
-                movestackdown();
-                stack[7] = tmp;
-                printf("\033[2J");
-                imprimirpila();
-                break;
-            case 'r':
-                stack[7] = sqrt(stack[7]);
-                movestackdown();
-                printf("\033[2J");
-                imprimirpila();
-                break;
-            case 's':
-                stack[7] = sin(stack[7]);
-                movestackdown();
-                printf("\033[2J");
-                imprimirpila();
-                break;
-            case 'c':
-                stack[7] = cos(stack[7]);
-                movestackdown();
-                printf("\033[2J");
-                imprimirpila();
-                break;
-            case 't':
-                stack[7] = tan(stack[7]);
-                movestackdown();
-                printf("\033[2J");
-                imprimirpila();
-                break;
-            case 'p':
-                stack[7] = pow(stack[7], 2);
-                movestackdown();
-                printf("\033[2J");
-                imprimirpila();
-                break;
-            default:
-                break;
+                switch (opc2)
+                {
+                case '+':
+                    tmp = stack[6] + stack[7];
+                    movestackdown();
+                    stack[7] = tmp;
+                    printf("\033[2J");
+                    imprimirpila();
+                    break;
+                case '-':
+                    tmp = stack[6] - stack[7];
+                    movestackdown();
+                    stack[7] = tmp;
+                    printf("\033[2J");
+                    imprimirpila();
+                    break;
+                case '*':
+                    tmp = stack[6] * stack[7];
+                    movestackdown();
+                    stack[7] = tmp;
+                    printf("\033[2J");
+                    imprimirpila();
+                    break;
+                case '/':
+                    if (stack[7] != 0)
+                    {
+                        tmp = stack[6] / stack[7];
+                        movestackdown();
+                        stack[7] = tmp;
+                        printf("\033[2J");
+                        imprimirpila();
+                        break;
+                    }
+                    else
+                    {
+                        printf("\033[2J");
+                        printf("MATH ERROR\n--> División por cero no definida");
+                        imprimirpila();
+                        break;
+                    }
+                case 'r':
+                    if (stack[7] >= 0)
+                    {
+                        stack[7] = sqrt(stack[7]);
+                        printf("\033[2J");
+                        imprimirpila();
+                        break;
+                    }
+                    else
+                    {
+                        printf("\033[2J");
+                        printf("MATH ERROR\n--> Raíz Negativa");
+                        imprimirpila();
+                        break;
+                    }
+                case 's':
+                    stack[7] = sin(stack[7]);
+                    printf("\033[2J");
+                    imprimirpila();
+                    break;
+                case 'c':
+                    stack[7] = cos(stack[7]);
+                    printf("\033[2J");
+                    imprimirpila();
+                    break;
+                case 't':
+                    if (stack[7] != 270 && stack[7] != 90 && stack[7] != -270 && stack[7] != -90)
+                    {
+                        stack[7] = tan(stack[7]);
+                        printf("\033[2J");
+                        imprimirpila();
+                        break;
+                    }
+                    else
+                    {
+                        printf("\033[2J");
+                        printf("MATH ERROR\n--> Tangente no definida");
+                        imprimirpila();
+                        break;
+                    }
+                case 'p':
+                    tmp = pow(stack[6], stack[7]);
+                    movestackdown();
+                    stack[7] = tmp;
+                    printf("\033[2J");
+                    imprimirpila();
+                    break;
+                case 'x':
+                    break;
+                }
             }
         }
         else if (mi_opc == 3)
         {
             // Limpiar último
             printf("\033[2J");
+            movestackdown();
             imprimirpila();
         }
         else if (mi_opc == 4)
         {
             // Limpiar todo
             printf("\033[2J");
+            for (i = 0; i < 8; i++)
+            {
+                stack[i] = 0;
+            }
             imprimirpila();
         }
         else if (mi_opc == 5)
@@ -180,8 +213,9 @@ int menu()
     return opc;
 }
 
-void operaciones()
+char operaciones()
 {
+    char opc;
     printf("=================================\n");
     printf("==     [+]. Suma               ==\n"); //
     printf("==     [-]. Resta              ==\n");
@@ -195,4 +229,6 @@ void operaciones()
     printf("==     [x]. Salir              ==\n");
     printf("=================================\n");
     printf("Ingrese la Operación a realizar: ");
+    scanf(" %c", &opc);
+    return opc;
 }
